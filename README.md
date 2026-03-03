@@ -1,6 +1,6 @@
-# Portfolio Optimization Engine for Relationship Managers
+# Agentic AI Portfolio Optimization Engine for Relationship Managers
 
-We built the intelligence layer most CRMs are missing: a deterministic engine that converts noisy portfolio signals into clear, ranked priorities for Relationship Managers (RMs). Instead of passive reporting, this project combines explainable scoring with watsonx Orchestrate workflows to drive action. The compute layer is deterministic and auditable; orchestration adds agentic execution around those decisions.
+We built the Agentic AI intelligence layer most CRMs are missing: a deterministic engine that converts noisy portfolio signals into clear, ranked priorities for Relationship Managers (RMs). Instead of passive reporting, this project combines explainable scoring with watsonx Orchestrate workflows to drive action. The compute layer is deterministic and auditable; Agentic AI orchestration adds execution around those decisions.
 
 ![alt text](image-6.png)
 
@@ -12,11 +12,11 @@ RMs often manage 40+ clients and must continuously balance:
 - revenue opportunity,
 - engagement urgency.
 
-Most CRMs are passive dashboards. They display data but do not reliably prioritize next best actions or coordinate operational follow-through.
+Most CRMs are passive dashboards. They display data but do not reliably prioritize next best actions, coordinate operational follow-through, or deliver Agentic AI support for RM execution.
 
 ## Solution Overview
 
-This system implements an end-to-end decision loop:
+This Agentic AI system implements an end-to-end decision loop:
 1. Portfolio signals are ingested per client.
 2. Deterministic scoring computes risk, priority, and confidence.
 3. Clients are ranked into actionable priorities.
@@ -35,7 +35,7 @@ Safety model:
 - **Deterministic intelligence engine:** `backend/portfolioEngine.js`
 - **Data model:** In-memory client/task/audit stores
 - **UI:** HTML/CSS dashboards (`frontend/`)
-- **Orchestration layer:** watsonx Orchestrate tools + workflow (Digital Employee integration)
+- **Orchestration layer:** watsonx Orchestrate tools + Agentic AI workflow (Digital Employee integration)
 - **Control plane:** Admin console for event simulation and live recompute
 
 ## Key Features
@@ -45,7 +45,7 @@ Safety model:
 - Deterministic confidence modeling
 - Priority ranking with top-client focus
 - Scenario simulation (`RATE_UP_BPS`, `DEPOSIT_SHOCK_PCT`)
-- Agent-triggered workflow actions via watsonx Orchestrate
+- Agentic AI-triggered workflow actions via watsonx Orchestrate
 - Draft outreach generation (LLM-assisted, not auto-sent)
 - Task generation for RM follow-up
 - Audit trail for key portfolio and workflow actions
@@ -81,21 +81,22 @@ This view shows a single client profile with deterministic scoring outputs and w
 ### 4) Agentic Workflow in watsonx Orchestrate
 ![Agentic workflow](image-3.png)
 
-This illustrates the tool-based orchestration layer used to trigger portfolio actions and coordinate RM workflows.
+This illustrates the Agentic AI tool-based orchestration layer used to trigger portfolio actions and coordinate RM workflows.
 
 ### 5) Admin Event Simulation Console
 ![Admin console view 1](image-4.png)
 ![Admin console view 2](image-5.png)
 
 The admin console is used to inject simulated events and validate real-time portfolio recomputation and agent reactions.
+The admin console is also where Agentic AI reactions can be validated under controlled event conditions.
 
 ## Technical Highlights (Resume-Oriented)
 
 - Designed and implemented a deterministic portfolio scoring engine (risk/priority/confidence)
 - Built an event-driven recomputation loop for dynamic priority updates
 - Implemented scenario simulation endpoints for stress-testing client outcomes
-- Integrated watsonx Orchestrate via tool-based workflows and OpenAPI contracts
-- Structured agent workflows to separate deterministic compute from orchestration logic
+- Integrated watsonx Orchestrate via Agentic AI tool-based workflows and OpenAPI contracts
+- Structured Agentic AI workflows to separate deterministic compute from orchestration logic
 - Implemented operational controls: tasking, auditability, and draft-only communication safety
 
 ## Local Setup
