@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>thinkRM Client Details</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap');
+
+    :root {
+      --primary: #0F2B46;
+      --background: #F7F9FB;
+      --accent: #1F70C1;
+      --success: #24A148;
+      --alert: #DA1E28;
+      --ink-strong: #10253D;
+      --ink-soft: #4D647D;
+      --panel: #FFFFFF;
+      --line: #D0DCE8;
+      --line-strong: #9FB4C8;
+      --surface-soft: #EAF1F8;
+      --shadow: 0 10px 24px rgba(15, 43, 70, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--background);
+      color: var(--ink-strong);
+    }
+
+    .top-bar {
+      height: 52px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.88rem;
+    }
+
+    .top-left { font-weight: 600; }
+
+    .top-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .env-tag {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-weight: 600;
+    }
+
+    .shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .head {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .head h1 {
+      margin: 0;
+      font-size: 1.06rem;
+    }
+
+    .head .meta {
+      margin-top: 4px;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 8px;
+      border: 1px solid var(--line-strong);
+      padding: 7px 10px;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #fff;
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn:hover {
+      background: var(--surface-soft);
+      border-color: var(--accent);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: #fbfdff;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .panel-body {
+      padding: 12px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+      padding: 8px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .kpi-label {
+      font-size: 0.74rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .kpi-value {
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: var(--ink-strong);
+    }
+
+    .scroll-summary {
+      font-size: 0.84rem;
+      font-weight: 500;
+      line-height: 1.4;
+      max-height: 92px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      white-space: pre-wrap;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .interaction-item {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .interaction-item + .interaction-item {
+      margin-top: 8px;
+    }
+
+    .trend-wrap {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .trend-title {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+
+    .trend-bars {
+      display: grid;
+      grid-template-columns: repeat(30, minmax(0, 1fr));
+      gap: 2px;
+      height: 78px;
+      align-items: end;
+    }
+
+    .bar {
+      border-radius: 2px 2px 0 0;
+      background: #A7BBD0;
+      min-height: 4px;
+    }
+
+    .bar.neg { background: #DA1E28; }
+    .bar.pos { background: #24A148; }
+
+    .metric-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    .meter {
+      height: 10px;
+      border-radius: 6px;
+      background: #E3EAF2;
+      border: 1px solid #D3DFEB;
+      overflow: hidden;
+    }
+
+    .meter > span {
+      display: block;
+      height: 100%;
+      background: #1F70C1;
+      width: 0;
+    }
+
+    .list {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+      font-size: 0.84rem;
+      line-height: 1.4;
+    }
+
+    .note {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+      padding: 10px;
+      font-size: 0.84rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    .small {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: var(--ink-soft);
+    }
+
+    .panel.full-span {
+      grid-column: 1 / -1;
+    }
+
+    .draft-email {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      padding: 10px;
+      font: inherit;
+      font-size: 0.84rem;
+      line-height: 1.35;
+      background: #fff;
+      color: var(--ink-strong);
+    }
+
+    .draft-email[readonly] {
+      background: #fbfdff;
+    }
+
+    .draft-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .draft-status {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    .sim-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sim-select {
+      min-width: 280px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font: inherit;
+      font-size: 0.82rem;
+      background: #fff;
+      color: var(--ink-strong);
+    }
+
+    .sim-results {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .sim-summary {
+      font-size: 0.84rem;
+      color: var(--ink-strong);
+    }
+
+    .sim-grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .sim-kpi {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .sim-kpi-label {
+      font-size: 0.74rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+    }
+
+    .sim-kpi-value {
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--ink-strong);
+    }
+
+    .sim-visuals {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .sim-chart-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .sim-chart-title {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .sim-bar-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .sim-bar-row {
+      display: grid;
+      grid-template-columns: minmax(140px, 1.2fr) minmax(180px, 2fr) minmax(76px, auto);
+      gap: 8px;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+
+    .sim-bar-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sim-bar-value {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--ink-soft);
+    }
+
+    .sim-bar-track {
+      height: 10px;
+      border-radius: 6px;
+      border: 1px solid #d6e1ed;
+      background: #eff4f9;
+      overflow: hidden;
+    }
+
+    .sim-bar-fill {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #1f70c1 0%, #0f62fe 100%);
+      width: 0%;
+    }
+
+    .sim-donut-wrap {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 8px;
+    }
+
+    .sim-donut {
+      width: 140px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .sim-donut::after {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      background: #fff;
+      border-radius: 50%;
+      border: 1px solid #e1eaf3;
+    }
+
+    .sim-legend {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 4px;
+      font-size: 0.76rem;
+      color: var(--ink-soft);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sim-visuals {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .top-bar {
+        height: auto;
+        padding: 8px 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .shell { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar" aria-label="Enterprise header">
+    <div class="top-left">thinkRM Console</div>
+    <div class="top-right">
+      <span class="env-tag">Demo</span>
+      <span>User: S. Rajesh</span>
+      <span class="status"><span class="dot"></span>Live</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="head">
+      <div>
+        <h1 id="clientTitle">Client Detail</h1>
+        <div class="meta">
+          <span id="clientId">ID: --</span>
+          <span id="priorityMeta">Priority: --</span>
+          <span id="confidenceMeta">Confidence: --</span>
+          <span id="lastUpdated">Updated: --</span>
+        </div>
+      </div>
+      <a class="btn" href="/RMDashboard.html">Back to thinkRM Dashboard</a>
+    </section>
+
+    <section class="layout">
+      <article class="panel">
+        <div class="panel-head"><h2>A) Risk Panel</h2><span class="small">Diagnosis support</span></div>
+        <div class="panel-body">
+          <div class="trend-wrap">
+            <div class="trend-title">Deposit trend chart (30-day)</div>
+            <div class="trend-bars" id="depositTrend"></div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi">
+              <span class="kpi-label">Utilization %</span>
+              <span class="kpi-value" id="utilValue">--</span>
+              <div class="meter"><span id="utilMeter"></span></div>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">Industry Risk Score</span>
+              <span class="kpi-value" id="industryRisk">--</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">Risk Delta (vs yesterday)</span>
+              <span class="kpi-value" id="riskDelta">--</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">Inflow / Outflow Ratio</span>
+              <span class="kpi-value" id="flowRatio">--</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><h2>B) Revenue Panel</h2><span class="small">Commercial opportunity</span></div>
+        <div class="panel-body">
+          <div class="kpi-grid">
+            <div class="kpi">
+              <span class="kpi-label">Annual Revenue Contribution</span>
+              <span class="kpi-value" id="annualRevenue">--</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">Cross-Sell Gap Indicator</span>
+              <span class="kpi-value" id="crossSellGap">--</span>
+            </div>
+          </div>
+          <div>
+            <div class="small">Product usage summary</div>
+            <ul class="list" id="productUsage"></ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><h2>C) Engagement Panel</h2><span class="small">Relationship health</span></div>
+        <div class="panel-body">
+          <div class="kpi-grid">
+            <div class="kpi">
+              <span class="kpi-label">Days Since Last Contact</span>
+              <span class="kpi-value" id="daysSince">--</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">Last Interaction Summary</span>
+              <div class="scroll-summary" id="lastInteraction">--</div>
+            </div>
+          </div>
+          <div>
+            <div class="small">Notes</div>
+            <div class="note" id="notes">--</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><h2>D) Why This Is Ranked #1</h2><span class="small">Explainability</span></div>
+        <div class="panel-body">
+          <div>
+            <div class="small">Top 3 weighted drivers</div>
+            <ol class="list" id="drivers"></ol>
+          </div>
+          <div>
+            <div class="small">Simple explanation</div>
+            <div class="note" id="simpleExplanation">--</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel full-span">
+        <div class="panel-head"><h2>E) Drafted Email</h2><span class="small">Client outreach draft</span></div>
+        <div class="panel-body">
+          <textarea id="draftEmail" class="draft-email" readonly></textarea>
+          <div class="draft-actions">
+            <button class="btn" id="editDraftBtn" type="button">Edit</button>
+            <button class="btn" id="sendDraftBtn" type="button">Send</button>
+            <span class="draft-status" id="draftStatus">Draft ready.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel full-span">
+        <div class="panel-head"><h2>F) Simulation Lab</h2><span class="small">RM scenario planning</span></div>
+        <div class="panel-body">
+          <div class="sim-controls">
+            <label class="small" for="simulationSelect">Select simulation</label>
+            <select id="simulationSelect" class="sim-select"></select>
+            <button class="btn" id="runSimulationBtn" type="button">Run Simulation</button>
+          </div>
+          <div class="sim-results" id="simulationResults">Choose a simulation to view results.</div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const el = (id) => document.getElementById(id);
+    const TOKEN_STORAGE_KEY = 'ORCHESTRATE_API_TOKEN';
+    const SIMULATIONS = [
+      { id: 'priority', label: '1) Client Priority Scoring' },
+      { id: 'outreach', label: '2) Outreach Queue' },
+      { id: 'escalation', label: '3) Risk Escalation (30/60/90)' },
+      { id: 'mitigation', label: '4) What-If Mitigation' },
+      { id: 'revenueAtRisk', label: '5) Revenue at Risk' },
+      { id: 'neglect', label: '6) Relationship Neglect' },
+      { id: 'stress', label: '7) Rate/FX Stress Test' },
+      { id: 'effectiveness', label: '8) Contact Effectiveness' },
+      { id: 'heatmap', label: '9) Portfolio Heatmap' },
+      { id: 'backtest', label: '10) Early Warning Backtest' },
+    ];
+
+    function getClientId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id') || 'C001';
+    }
+
+    function getBearerToken() {
+      const fromQuery = new URLSearchParams(window.location.search).get('token');
+      const token = fromQuery || localStorage.getItem(TOKEN_STORAGE_KEY) || '';
+      return token.trim();
+    }
+
+    function ensureBearerToken() {
+      let token = getBearerToken();
+      if (!token) {
+        token = (window.prompt('Enter API bearer token') || '').trim();
+        if (token) localStorage.setItem(TOKEN_STORAGE_KEY, token);
+      }
+      return token;
+    }
+
+    async function request(url, options = {}) {
+      const token = ensureBearerToken();
+      const headers = {
+        ...(options.headers || {})
+      };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      const response = await fetch(url, {
+        ...options,
+        headers,
+        cache: 'no-store',
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed: ${url}`);
+      }
+      return response.json();
+    }
+
+    function confidenceLabel(value) {
+      if (value >= 0.75) return 'High';
+      if (value >= 0.5) return 'Medium';
+      return 'Low';
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0,
+      }).format(value);
+    }
+
+    function seedFromId(clientId) {
+      return clientId.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+    }
+
+    function depositSeries(currentPct, seed) {
+      const series = [];
+      for (let i = 29; i >= 0; i -= 1) {
+        const drift = (currentPct / 30) * (30 - i);
+        const jitter = ((Math.sin((seed + i) * 0.6) + Math.cos((seed + i) * 0.35)) * 1.6);
+        series.push(drift + jitter);
+      }
+      return series;
+    }
+
+    function renderTrend(currentPct, clientId) {
+      const seed = seedFromId(clientId);
+      const data = depositSeries(currentPct, seed);
+      const maxAbs = Math.max(6, ...data.map((v) => Math.abs(v)));
+      const bars = data.map((v) => {
+        const h = Math.max(6, Math.round((Math.abs(v) / maxAbs) * 70));
+        const cls = v < 0 ? 'neg' : 'pos';
+        return `<span class="bar ${cls}" style="height:${h}px" title="${v.toFixed(1)}%"></span>`;
+      }).join('');
+      el('depositTrend').innerHTML = bars;
+    }
+
+    function renderProductUsage(detail) {
+      const s = detail.rawSignals || detail;
+      const items = [
+        `Credit line utilization at ${s.util_pct}% (${s.util_pct > 70 ? 'elevated' : 'moderate'} usage).`,
+        `Cash flow balance ratio is ${s.inflow_outflow_ratio} (${s.inflow_outflow_ratio < 0.9 ? 'outflow pressure' : 'stable inflow'}).`,
+        `FX movement over 30d is ${s.fx_30d_pct}% (${Math.abs(s.fx_30d_pct) > 2 ? 'active hedging discussion recommended' : 'limited volatility'}).`,
+      ];
+      el('productUsage').innerHTML = items.map((txt) => `<li>${txt}</li>`).join('');
+    }
+
+    function renderDrivers(detail) {
+      const list = detail.drivers && detail.drivers.length
+        ? detail.drivers.slice(0, 3)
+        : ['Insufficient driver data'];
+      el('drivers').innerHTML = list.map((d) => `<li>${d}</li>`).join('');
+    }
+
+    function simpleExplanation(detail) {
+      const s = detail.subscores || {};
+      const ranked = [
+        ['liquidity', s.liquidity || 0],
+        ['credit', s.credit || 0],
+        ['engagement', s.engagement || 0],
+        ['revenue', s.revenueOpp || 0],
+      ].sort((a, b) => b[1] - a[1]);
+
+      const top = ranked.slice(0, 2).map((x) => x[0]).join(' and ');
+      return `This client ranks high because ${top} signals are currently stronger than the rest of the portfolio. The recommended action focuses on stabilizing near-term risk while preserving revenue opportunity.`;
+    }
+
+    function fallbackNotes(detail, profileData, auditEntries) {
+      if (profileData && profileData.notes && profileData.notes.trim()) return profileData.notes;
+      if (detail.notes && detail.notes.trim()) return detail.notes;
+      if (auditEntries.length) return `Recent activity: ${auditEntries[0].auditdescription}`;
+      return 'No additional notes available. Use this view to capture context before next outreach.';
+    }
+
+    function getAuditEntries(clientId, auditData) {
+      const auditMap = globalThis.Audit && typeof globalThis.Audit === 'object' ? globalThis.Audit : null;
+      const mapped = auditMap ? auditMap[clientId] : null;
+
+      if (Array.isArray(mapped)) return mapped;
+      if (mapped && Array.isArray(mapped.audit)) return mapped.audit;
+      if (mapped && typeof mapped === 'string') return [{ auditdescription: mapped }];
+      if (mapped && typeof mapped === 'object') return [mapped];
+
+      return (auditData && Array.isArray(auditData.audit)) ? auditData.audit : [];
+    }
+
+    function renderInteractionBoxes(auditEntries, daysSinceContact) {
+      if (!auditEntries.length) {
+        el('lastInteraction').innerHTML = `<div class="interaction-item">No logged activity in the last ${daysSinceContact} days</div>`;
+        return;
+      }
+
+      const cards = auditEntries.slice(0, 10).map((entry) => {
+        const at = entry.at || entry.date || entry.timestamp;
+        const label = at ? new Date(at).toLocaleDateString() : 'Date unavailable';
+        const description = entry.auditdescription || entry.description || entry.summary || 'Interaction logged';
+        return `<div class="interaction-item"><strong>${label}</strong><br>${description}</div>`;
+      }).join('');
+
+      el('lastInteraction').innerHTML = cards;
+    }
+
+    function fallbackEmailDraft(detail) {
+      const name = detail.name || 'client';
+      return `Subject: Relationship check-in\\nHi ${name} team, we would like to schedule a short check-in to review current liquidity and utilization trends. Please share your availability for this week.`;
+    }
+
+    function splitDraftSubjectAndBody(draftText) {
+      const content = String(draftText || '').trim();
+      if (!content) return { subject: 'Relationship follow-up', body: '' };
+      const lines = content.split('\\n');
+      const first = lines[0] || '';
+      if (/^subject\\s*:/i.test(first)) {
+        const subject = first.replace(/^subject\\s*:/i, '').trim() || 'Relationship follow-up';
+        const body = lines.slice(1).join('\\n').trim();
+        return { subject, body };
+      }
+      return { subject: 'Relationship follow-up', body: content };
+    }
+
+    function setDraftStatus(message) {
+      el('draftStatus').textContent = message;
+    }
+
+    function setupDraftEmail(clientId, initialDraft) {
+      const draftBox = el('draftEmail');
+      const editBtn = el('editDraftBtn');
+      const sendBtn = el('sendDraftBtn');
+      let isEditMode = false;
+      draftBox.value = initialDraft || '';
+      setDraftStatus('Draft ready.');
+
+      editBtn.onclick = async () => {
+        if (!isEditMode) {
+          isEditMode = true;
+          draftBox.removeAttribute('readonly');
+          draftBox.focus();
+          editBtn.textContent = 'Save';
+          setDraftStatus('Editing draft...');
+          return;
+        }
+
+        try {
+          await request(`/api/clients/${encodeURIComponent(clientId)}/profile`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: draftBox.value }),
+          });
+          isEditMode = false;
+          draftBox.setAttribute('readonly', 'readonly');
+          editBtn.textContent = 'Edit';
+          setDraftStatus(`Draft saved at ${new Date().toLocaleTimeString()}.`);
+        } catch (error) {
+          setDraftStatus('Could not save draft.');
+        }
+      };
+
+      sendBtn.onclick = () => {
+        if (isEditMode) {
+          setDraftStatus('Save the draft before sending.');
+          return;
+        }
+        const { subject, body } = splitDraftSubjectAndBody(draftBox.value);
+        const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailto;
+        setDraftStatus('Opening default mail client...');
+      };
+    }
+
+    function renderSimulation(simResult) {
+      const numericMetrics = (simResult.metrics || []).map((m) => {
+        const raw = String(m.value ?? '');
+        const normalized = raw.replace(/,/g, '');
+        const fracMatch = normalized.match(/(-?\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)/);
+        if (fracMatch) {
+          const num = Number(fracMatch[1]);
+          const den = Number(fracMatch[2]);
+          return {
+            label: m.label,
+            raw,
+            kind: 'fraction',
+            numericValue: num,
+            scaledValue: den ? (num / den) * 100 : num,
+          };
+        }
+        const pctMatch = normalized.match(/(-?\d+(?:\.\d+)?)\s*%/);
+        if (pctMatch) {
+          const value = Number(pctMatch[1]);
+          return { label: m.label, raw, kind: 'percent', numericValue: value, scaledValue: value };
+        }
+        const currencyMatch = normalized.match(/\$(-?\d+(?:\.\d+)?)/);
+        if (currencyMatch) {
+          const value = Number(currencyMatch[1]);
+          return { label: m.label, raw, kind: 'currency', numericValue: value, scaledValue: value };
+        }
+        const isPlainNumber = /^-?\d+(?:\.\d+)?$/.test(normalized.trim());
+        if (!isPlainNumber) return null;
+        const value = Number(normalized.trim());
+        return { label: m.label, raw, kind: 'number', numericValue: value, scaledValue: value };
+      }).filter(Boolean);
+
+      const visuals = (() => {
+        if (!numericMetrics.length) {
+          return '<div class="small">No numeric metrics available to chart for this simulation.</div>';
+        }
+
+        const kindCounts = numericMetrics.reduce((acc, m) => {
+          acc[m.kind] = (acc[m.kind] || 0) + 1;
+          return acc;
+        }, {});
+        const selectedKind = Object.entries(kindCounts).sort((a, b) => b[1] - a[1])[0][0];
+        const chartMetrics = numericMetrics.filter((m) => m.kind === selectedKind).slice(0, 4);
+
+        const maxScale = selectedKind === 'percent' || selectedKind === 'fraction'
+          ? 100
+          : Math.max(1, ...chartMetrics.map((m) => Math.abs(m.scaledValue)));
+
+        const barRows = chartMetrics.map((m) => {
+          const bounded = Math.max(0, m.scaledValue);
+          const width = Math.round((bounded / maxScale) * 100);
+          return `
+            <div class="sim-bar-row">
+              <span class="sim-bar-label" title="${m.label}">${m.label}</span>
+              <span class="sim-bar-track"><span class="sim-bar-fill" style="width:${width}%"></span></span>
+              <span class="sim-bar-value">${m.raw}</span>
+            </div>
+          `;
+        }).join('');
+
+        const pieData = chartMetrics.slice(0, 3).map((m) => ({ ...m, shareValue: Math.max(0, m.scaledValue) }));
+        const pieTotal = pieData.reduce((acc, m) => acc + m.shareValue, 0) || 1;
+        const colors = ['#1f70c1', '#24a148', '#da1e28'];
+        let start = 0;
+        const slices = pieData.map((m, idx) => {
+          const pct = (m.shareValue / pieTotal) * 100;
+          const part = `${colors[idx]} ${start.toFixed(2)}% ${(start + pct).toFixed(2)}%`;
+          start += pct;
+          return part;
+        }).join(', ');
+        const legend = pieData.map((m, idx) => {
+          const pct = ((m.shareValue / pieTotal) * 100).toFixed(1);
+          return `<li><span style="color:${colors[idx]};font-weight:700;">■</span> ${m.label}: ${m.raw} (${pct}%)</li>`;
+        }).join('');
+
+        return `
+          <div class="sim-visuals">
+            <div class="sim-chart-box">
+              <div class="sim-chart-title">Metric Bar Chart (${selectedKind})</div>
+              <div class="sim-bar-list">${barRows}</div>
+            </div>
+            <div class="sim-chart-box">
+              <div class="sim-chart-title">Metric Distribution (${selectedKind})</div>
+              <div class="sim-donut-wrap">
+                <div class="sim-donut" style="background: conic-gradient(${slices});"></div>
+                <ul class="sim-legend">${legend}</ul>
+              </div>
+            </div>
+          </div>
+        `;
+      })();
+
+      const metrics = (simResult.metrics || []).map((m) => `
+        <div class="sim-kpi">
+          <div class="sim-kpi-label">${m.label}</div>
+          <div class="sim-kpi-value">${m.value}</div>
+        </div>
+      `).join('');
+      const highlights = (simResult.highlights || []).length
+        ? `<ul class="list">${simResult.highlights.map((h) => `<li>${h}</li>`).join('')}</ul>`
+        : '';
+      el('simulationResults').innerHTML = `
+        <div class="sim-summary"><strong>${simResult.title}</strong> - ${simResult.summary}</div>
+        <div class="sim-grid">${metrics}</div>
+        ${visuals}
+        ${highlights}
+      `;
+    }
+
+    function setupSimulationLab(clientId) {
+      const select = el('simulationSelect');
+      select.innerHTML = SIMULATIONS.map((sim) => `<option value="${sim.id}">${sim.label}</option>`).join('');
+      const runSelected = async () => {
+        const simulationId = select.value;
+        try {
+          const response = await request(`/api/clients/${encodeURIComponent(clientId)}/simulations/${encodeURIComponent(simulationId)}`);
+          renderSimulation(response.result);
+        } catch (error) {
+          el('simulationResults').textContent = 'Unable to run simulation for this client right now.';
+        }
+      };
+      el('runSimulationBtn').addEventListener('click', runSelected);
+      el('simulationResults').textContent = 'Select a simulation and press Run Simulation.';
+    }
+
+    async function init() {
+      const clientId = getClientId();
+      try {
+        const [detail, auditData, profileData] = await Promise.all([
+          request(`/api/clients/${clientId}`),
+          request(`/api/audit?limit=20&clientId=${encodeURIComponent(clientId)}`).catch(() => ({ audit: [] })),
+          request(`/api/clients/${clientId}/profile`).catch(() => null),
+        ]);
+
+        const signals = detail.rawSignals || detail;
+        const auditEntries = getAuditEntries(detail.id || clientId, auditData);
+        const conf = confidenceLabel(detail.confidence);
+
+        const baseRevenue = signals.revenue_bucket === 'HIGH'
+          ? 12600000
+          : signals.revenue_bucket === 'MEDIUM'
+            ? 4800000
+            : 1200000;
+        const annualRevenue = baseRevenue * (0.85 + ((detail.priorityScore || 50) / 250));
+
+        const industryBase = signals.revenue_bucket === 'HIGH' ? 72 : signals.revenue_bucket === 'MEDIUM' ? 58 : 44;
+        const industryRisk = Math.min(95, Math.max(20, Math.round(industryBase + Math.abs(signals.fx_30d_pct) * 4 + Math.max(0, -signals.deposit_30d_pct) * 0.5)));
+        const riskDeltaVal = ((signals.util_2w_delta * 0.35) + (Math.max(0, -signals.deposit_30d_pct) * 0.12) - 1.4);
+        const riskDelta = `${riskDeltaVal >= 0 ? '+' : ''}${riskDeltaVal.toFixed(1)} pts`;
+
+        const crossSellGap = `${Math.max(8, Math.round(100 - (detail.subscores?.revenueOpp || 0)))}% open`;
+
+        el('clientTitle').textContent = detail.name;
+        el('clientId').textContent = `ID: ${detail.id}`;
+        el('priorityMeta').textContent = `Priority: ${Math.round(detail.priorityScore)}`;
+        el('confidenceMeta').textContent = `Confidence: ${conf}`;
+        el('lastUpdated').textContent = `Updated: ${new Date().toLocaleString()}`;
+
+        renderTrend(signals.deposit_30d_pct, detail.id);
+
+        el('utilValue').textContent = `${signals.util_pct}%`;
+        el('utilMeter').style.width = `${Math.max(0, Math.min(100, signals.util_pct))}%`;
+        el('industryRisk').textContent = `${industryRisk}/100`;
+        el('riskDelta').textContent = riskDelta;
+        el('flowRatio').textContent = String(signals.inflow_outflow_ratio);
+
+        el('annualRevenue').textContent = formatCurrency(annualRevenue);
+        el('crossSellGap').textContent = crossSellGap;
+        renderProductUsage(detail);
+
+        el('daysSince').textContent = `${signals.days_since_contact} days`;
+        renderInteractionBoxes(auditEntries, signals.days_since_contact);
+        el('notes').textContent = fallbackNotes(detail, profileData, auditEntries);
+
+        renderDrivers(detail);
+        el('simpleExplanation').textContent = simpleExplanation(detail);
+        const initialDraft = (profileData && profileData.email) ? profileData.email : fallbackEmailDraft(detail);
+        setupDraftEmail(detail.id, initialDraft);
+        setupSimulationLab(detail.id);
+      } catch (error) {
+        el('clientTitle').textContent = 'Unable to load client details';
+        el('notes').textContent = 'The selected client could not be loaded. Return to dashboard and try again.';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

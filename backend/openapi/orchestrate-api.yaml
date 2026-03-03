@@ -1,0 +1,821 @@
+openapi: 3.0.3
+info:
+  title: IBM Hackathon RM Portfolio API
+  version: 1.1.0
+  description: API contract for Watsonx Orchestrate tool calls into the Node.js backend.
+servers:
+  - url: https://ibm-71055141261b.herokuapp.com
+    description: Production deployment
+security:
+  - bearerAuth: []
+paths:
+  /openapi.yaml:
+    get:
+      operationId: getOpenApiYaml
+      summary: Get OpenAPI YAML
+      security: []
+      responses:
+        '200':
+          description: OpenAPI yaml file
+          content:
+            application/yaml:
+              schema:
+                type: string
+
+  /:
+    get:
+      operationId: getLoginPage
+      summary: Serve login page
+      security: []
+      responses:
+        '200':
+          description: HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /admindashboard:
+    get:
+      operationId: getAdminDashboardPage
+      summary: Serve admin dashboard page
+      security: []
+      responses:
+        '200':
+          description: HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /test:
+    get:
+      operationId: healthTest
+      summary: Health check
+      security: []
+      responses:
+        '200':
+          description: Server is reachable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/ibm/apikey-token:
+    post:
+      operationId: getIbmIamToken
+      summary: Resolve IBM IAM token with cache and refresh support
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IbmTokenRequest'
+      responses:
+        '200':
+          description: Token payload
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Invalid bearer token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ibm/apikey-token/status:
+    get:
+      operationId: getIbmIamTokenStatus
+      summary: Get cached IBM IAM token metadata
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token cache status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IbmTokenStatus'
+
+  /api/ibm/apikey-token/clear:
+    post:
+      operationId: clearIbmIamTokenCache
+      summary: Clear IBM IAM token cache
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Cache cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/summary:
+    get:
+      operationId: getSummary
+      summary: Get portfolio snapshot and top 3 clients
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Summary payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snapshot:
+                    $ref: '#/components/schemas/Snapshot'
+                  top3:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TopClient'
+
+  /api/clients:
+    get:
+      operationId: listClients
+      summary: List ranked clients
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Client list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TopClient'
+
+  /api/clients/{id}:
+    get:
+      operationId: getClientById
+      summary: Get detailed client metrics
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detailed client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDetails'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/clients/{id}/simulations/{simulationId}:
+    get:
+      operationId: getClientSimulation
+      summary: Run simulation for a client
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: simulationId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Simulation result payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clientId:
+                    type: string
+                  simulationId:
+                    type: string
+                  result:
+                    type: object
+                    additionalProperties: true
+        '400':
+          description: Invalid simulation id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/clients/{id}/profile:
+    # get:
+    #   operationId: getClientProfile
+    #   summary: Get editable profile fields
+    #   security:
+    #     - bearerAuth: []
+    #   parameters:
+    #     - in: path
+    #       name: id
+    #       required: true
+    #       schema:
+    #         type: string
+    #   responses:
+    #     '200':
+    #       description: Client profile
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ClientProfile'
+    #     '404':
+    #       description: Client not found
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      operationId: updateClientProfile
+      summary: Update one client across supported profile and signal fields
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientProfileRequest'
+      responses:
+        '200':
+          description: Updated profile and computed fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatedClientProfile'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Client not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/recompute:
+    post:
+      operationId: recomputePortfolio
+      summary: Recompute client ranking and return diff
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Recomputed ranking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecomputeResponse'
+
+  /api/scenario:
+    post:
+      operationId: runScenario
+      summary: Run a portfolio scenario simulation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScenarioRequest'
+      responses:
+        '200':
+          description: Scenario result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/tasks:
+    get:
+      operationId: listTasks
+      summary: List tasks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Tasks list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tasks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+
+    post:
+      operationId: createTask
+      summary: Create a task for a client
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/audit:
+    get:
+      operationId: listAudit
+      summary: List audit events
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - in: query
+          name: clientId
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Audit list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  audit:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditEntry'
+
+  /api/audit/task-entry:
+    post:
+      operationId: addAuditTaskEntry
+      summary: Add task-created audit line and return audit hashmap
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuditTaskEntryRequest'
+      responses:
+        '201':
+          description: Audit task entry added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditTaskEntryResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/events/input-changed:
+    post:
+      operationId: applyInputChangeEvent
+      summary: Apply a single input event and recompute rankings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputChangedRequest'
+      responses:
+        '200':
+          description: Updated ranking after event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecomputeResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/alerts:
+    get:
+      operationId: listAlerts
+      summary: List alert messages
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Alerts list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alerts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Alert'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: token
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+
+    IbmTokenRequest:
+      type: object
+      properties:
+        apikey:
+          type: string
+        forceRefresh:
+          type: boolean
+
+    IbmTokenStatus:
+      type: object
+      properties:
+        hasToken:
+          type: boolean
+        tokenType:
+          type: string
+        fetchedAt:
+          type: string
+          nullable: true
+        expiresAt:
+          type: string
+          nullable: true
+        expired:
+          type: boolean
+          nullable: true
+        cachedTokenPreview:
+          type: string
+          nullable: true
+
+    Snapshot:
+      type: object
+      properties:
+        totalClients:
+          type: integer
+        highRiskCount:
+          type: integer
+        mediumRiskCount:
+          type: integer
+        noContactOver30Count:
+          type: integer
+        newAlertsCount:
+          type: integer
+
+    TopClient:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        rank:
+          type: integer
+        score:
+          type: number
+        calculatedRisk:
+          type: number
+        confidence:
+          type: number
+        primaryDriver:
+          type: string
+          nullable: true
+
+    ClientDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        rank:
+          type: integer
+        priorityScore:
+          type: number
+        calculatedRisk:
+          type: number
+        rawSignals:
+          type: object
+          additionalProperties: true
+        subscores:
+          type: object
+          additionalProperties:
+            type: number
+        drivers:
+          type: array
+          items:
+            type: string
+        confidence:
+          type: number
+        notes:
+          type: string
+
+    ClientProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        calculatedRisk:
+          type: number
+        notes:
+          type: string
+        email:
+          type: string
+
+    UpdatedClientProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        rank:
+          type: integer
+        priorityScore:
+          type: number
+        calculatedRisk:
+          type: number
+        rawSignals:
+          type: object
+          additionalProperties: true
+        notes:
+          type: string
+        email:
+          type: string
+        subscores:
+          type: object
+          additionalProperties: true
+        drivers:
+          type: array
+          items:
+            type: string
+        confidence:
+          type: number
+
+    UpdateClientProfileRequest:
+      type: object
+      minProperties: 1
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        deposit_30d_pct:
+          type: number
+        util_pct:
+          type: number
+        inflow_outflow_ratio:
+          type: number
+        util_2w_delta:
+          type: number
+        fx_30d_pct:
+          type: number
+        revenue_bucket:
+          type: string
+          enum: [LOW, MEDIUM, HIGH]
+        days_since_contact:
+          type: number
+        floating_rate:
+          type: boolean
+        notes:
+          type: string
+        email:
+          type: string
+
+    RankingDiffEntry:
+      type: object
+      properties:
+        clientId:
+          type: string
+        rankDelta:
+          type: integer
+        scoreDelta:
+          type: number
+
+    RankingDiff:
+      type: object
+      properties:
+        topMovers:
+          type: array
+          items:
+            $ref: '#/components/schemas/RankingDiffEntry'
+        top3Changed:
+          type: boolean
+        enteredTop3:
+          type: array
+          items:
+            type: string
+
+    RecomputeResponse:
+      type: object
+      properties:
+        snapshot:
+          $ref: '#/components/schemas/Snapshot'
+        top3:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopClient'
+        diff:
+          $ref: '#/components/schemas/RankingDiff'
+
+    ScenarioRequest:
+      type: object
+      required: [scenarioType, magnitude]
+      properties:
+        scenarioType:
+          type: string
+          enum: [RATE_UP_BPS, DEPOSIT_SHOCK_PCT]
+        magnitude:
+          type: number
+
+    ScenarioResponse:
+      type: object
+      properties:
+        beforeTop3:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopClient'
+        afterTop3:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopClient'
+        movers:
+          type: array
+          items:
+            $ref: '#/components/schemas/RankingDiffEntry'
+        snapshot:
+          $ref: '#/components/schemas/Snapshot'
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        clientId:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateTaskRequest:
+      type: object
+      required: [clientId, description, dueDate]
+      properties:
+        clientId:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: string
+
+    AuditEntry:
+      type: object
+      properties:
+        at:
+          type: string
+          format: date-time
+        clientId:
+          type: string
+        auditdescription:
+          type: string
+
+    AuditTaskEntryRequest:
+      type: object
+      required: [clientId, taskDescription]
+      properties:
+        clientId:
+          type: string
+        taskDescription:
+          type: string
+        date:
+          type: string
+          format: date-time
+
+    AuditTaskEntryResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        entry:
+          $ref: '#/components/schemas/AuditEntry'
+        audit:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    InputChangedRequest:
+      type: object
+      required: [clientId, eventType, magnitude]
+      properties:
+        clientId:
+          type: string
+        eventType:
+          type: string
+          enum: [DEPOSIT_30D_PCT, UTIL_PCT, INFLOW_OUTFLOW_RATIO, UTIL_2W_DELTA, FX_30D_PCT, DAYS_SINCE_CONTACT, RATE_UP_BPS, DEPOSIT_SHOCK_PCT]
+        magnitude:
+          type: number
+
+    Alert:
+      type: object
+      properties:
+        at:
+          type: string
+          format: date-time
+        clientId:
+          type: string
+        type:
+          type: string
+        message:
+          type: string

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>thinkRM | Logged Out</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+    :root {
+      --primary: #0F2B46;
+      --background: #F7F9FB;
+      --accent: #1F70C1;
+      --ink-strong: #10253D;
+      --ink-soft: #4D647D;
+      --panel: #FFFFFF;
+      --line: #D0DCE8;
+      --shadow: 0 14px 28px rgba(15, 43, 70, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--background);
+      color: var(--ink-strong);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .panel {
+      width: min(460px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .panel-body {
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .message {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: var(--ink-strong);
+    }
+
+    .sub {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+    }
+
+    .btn {
+      width: fit-content;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      filter: brightness(1.05);
+    }
+  </style>
+</head>
+<body>
+  <section class="panel" aria-labelledby="logoutTitle">
+    <div class="panel-head" id="logoutTitle">thinkRM Console</div>
+    <div class="panel-body">
+      <p class="message">You have been logged out of the thinkRM Dashboard.</p>
+      <p class="sub">For security, close your browser if you are on a shared device.</p>
+      <a class="btn" href="/">Sign In Again</a>
+    </div>
+  </section>
+</body>
+</html>

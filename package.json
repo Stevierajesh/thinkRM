@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "node.js": "^0.0.1-security"
+  }
+}

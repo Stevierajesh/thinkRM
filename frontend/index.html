@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>thinkRM | Login</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap');
+
+    :root {
+      --primary: #0F2B46;
+      --background: #F7F9FB;
+      --accent: #1F70C1;
+      --success: #24A148;
+      --alert: #DA1E28;
+
+      --ink-strong: #10253D;
+      --ink-soft: #49617A;
+      --panel: #FFFFFF;
+      --line: #D0DCE8;
+      --focus: #0F62FE;
+      --accent-soft: #D7E9FA;
+      --shadow: 0 20px 48px rgba(15, 43, 70, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'IBM Plex Sans', sans-serif;
+      color: var(--ink-strong);
+      background:
+        radial-gradient(circle at 10% 8%, rgba(31, 112, 193, 0.16), transparent 28%),
+        radial-gradient(circle at 85% 92%, rgba(15, 43, 70, 0.12), transparent 28%),
+        linear-gradient(145deg, #fafdff 0%, var(--background) 55%, #edf3f9 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .login-shell {
+      width: min(980px, 100%);
+      min-height: min(620px, 92vh);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      animation: enter 500ms ease-out;
+    }
+
+    .brand {
+      padding: clamp(28px, 4vw, 42px);
+      background:
+        linear-gradient(175deg, var(--primary) 0%, #113556 68%, #174C79 100%);
+      color: #f2f8ff;
+      display: grid;
+      align-content: space-between;
+      gap: 20px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .brand::before,
+    .brand::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      border-radius: 50%;
+      filter: blur(1px);
+    }
+
+    .brand::before {
+      width: 220px;
+      height: 220px;
+      background: rgba(31, 112, 193, 0.26);
+      top: -80px;
+      right: -60px;
+    }
+
+    .brand::after {
+      width: 170px;
+      height: 170px;
+      background: rgba(247, 249, 251, 0.1);
+      bottom: -64px;
+      left: -38px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      font-size: 0.92rem;
+    }
+
+    .logo-mark {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(247, 249, 251, 0.5);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .brand h1 {
+      margin: 0;
+      line-height: 1.1;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      max-width: 14ch;
+    }
+
+    .brand p {
+      margin: 12px 0 0;
+      font-size: 1rem;
+      max-width: 36ch;
+      color: rgba(242, 248, 255, 0.85);
+    }
+
+    .status-strip {
+      border: 1px solid rgba(247, 249, 251, 0.3);
+      border-radius: 12px;
+      padding: 12px 14px;
+      backdrop-filter: blur(3px);
+      background: rgba(247, 249, 251, 0.06);
+      font-size: 0.9rem;
+      display: grid;
+      gap: 8px;
+    }
+
+    .status-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .status-value {
+      font-family: 'IBM Plex Mono', monospace;
+      color: #b7d8f8;
+    }
+
+    .auth {
+      padding: clamp(24px, 4vw, 44px);
+      display: grid;
+      align-content: center;
+    }
+
+    .auth h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.7vw, 2rem);
+    }
+
+    .auth .subtitle {
+      margin: 8px 0 28px;
+      color: var(--ink-soft);
+      font-size: 0.96rem;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--ink-strong);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 13px 14px;
+      font: inherit;
+      color: var(--ink-strong);
+      background: #fff;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .password-wrap input {
+      padding-right: 74px;
+    }
+
+    input::placeholder {
+      color: #7f93a8;
+    }
+
+    input:focus {
+      border-color: var(--focus);
+      box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.16);
+      outline: none;
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 2px;
+      margin-bottom: 4px;
+      font-size: 0.88rem;
+    }
+
+    .remember {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink-soft);
+    }
+
+    .remember input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .button {
+      border: none;
+      border-radius: 10px;
+      padding: 13px 15px;
+      background: linear-gradient(135deg, var(--accent) 0%, #16579a 100%);
+      color: #fff;
+      font: inherit;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 160ms ease, filter 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 9px;
+      transform: translateY(-50%);
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--accent);
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 9px;
+      cursor: pointer;
+    }
+
+    .toggle-password:hover {
+      background: var(--accent-soft);
+    }
+
+    .meta {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.8rem;
+    }
+
+    .meta .ok { color: var(--success); }
+    .meta .alert { color: var(--alert); }
+
+    @media (max-width: 860px) {
+      .login-shell {
+        grid-template-columns: 1fr;
+        min-height: unset;
+      }
+
+      .brand {
+        gap: 18px;
+      }
+
+      .status-strip {
+        max-width: 420px;
+      }
+    }
+
+    @keyframes enter {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="login-shell">
+    <section class="brand" aria-label="Platform highlights">
+      <div>
+        <div class="logo">
+          <span class="logo-mark">RM</span>
+          <span>thinkRM</span>
+        </div>
+        <h1>thinkRM. intelligence for modern teams.</h1>
+        <p>Track strategic contacts, assess risk, and prioritize next best actions in one governed workspace.</p>
+      </div>
+
+      <div class="status-strip" role="status" aria-live="polite">
+        <div class="status-line">
+          <span>System Health</span>
+          <span class="status-value">Operational</span>
+        </div>
+        <div class="status-line">
+          <span>Compliance</span>
+          <span class="status-value">SOC2 Ready</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth" aria-label="Login form">
+      <h2>Sign in</h2>
+      <p class="subtitle">Use your enterprise credentials to continue.</p>
+
+      <form action="/RMDashboard.html" method="get">
+        <div class="field">
+          <label for="email">Work Email</label>
+          <input id="email" type="email" placeholder="name@company.com" autocomplete="email" required />
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+            <button class="toggle-password" type="button" id="togglePassword" aria-label="Show password" aria-pressed="false">Show</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="remember" for="remember">
+            <input id="remember" type="checkbox" />
+            Remember me
+          </label>
+          <a class="link" href="#">Forgot password?</a>
+        </div>
+
+        <button class="button" type="submit">Secure Login</button>
+      </form>
+
+      <div class="meta">
+        <span class="ok">Access policy verified</span>
+        <span class="alert">Unauthorized use prohibited</span>
+      </div>
+    </section>
+  </main>
+  <script>
+    const passwordInput = document.getElementById('password');
+    const togglePasswordButton = document.getElementById('togglePassword');
+
+    togglePasswordButton.addEventListener('click', () => {
+      const showing = passwordInput.type === 'text';
+      passwordInput.type = showing ? 'password' : 'text';
+      togglePasswordButton.textContent = showing ? 'Show' : 'Hide';
+      togglePasswordButton.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+      togglePasswordButton.setAttribute('aria-pressed', String(!showing));
+    });
+  </script>
+</body>
+</html>

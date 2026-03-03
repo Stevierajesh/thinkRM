@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>thinkRM Admin Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #111a34;
+      --card: #121a30;
+      --card-2: #17213d;
+      --text: #dbe6ff;
+      --text-muted: #9aaacf;
+      --line: #2a3760;
+      --accent: #3dd3ff;
+      --accent-2: #6ef1b2;
+      --warn: #ffb648;
+      --danger: #ff5f7d;
+      --ok: #6ef1b2;
+      --shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    html[data-theme="light"] {
+      --bg: #f5f8ff;
+      --bg-soft: #e9efff;
+      --card: #ffffff;
+      --card-2: #f2f6ff;
+      --text: #1b2540;
+      --text-muted: #57658d;
+      --line: #d4ddf4;
+      --accent: #0066ff;
+      --accent-2: #009c66;
+      --warn: #b26a00;
+      --danger: #c0324d;
+      --ok: #0e8a5e;
+      --shadow: 0 10px 26px rgba(10, 25, 70, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 10% -10%, rgba(61, 211, 255, 0.25), transparent 34%),
+        radial-gradient(circle at 90% 0%, rgba(110, 241, 178, 0.18), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .shell {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(140deg, var(--card), var(--card-2));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+      letter-spacing: 0.4px;
+    }
+
+    .title p {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input, select, button, textarea {
+      font: inherit;
+      color: var(--text);
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 11px;
+      outline: none;
+    }
+
+    input, select, textarea { min-width: 120px; }
+
+    button {
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    button:hover { transform: translateY(-1px); border-color: var(--accent); }
+    button.primary { background: linear-gradient(135deg, var(--accent), #2ba9f7); color: #04121d; font-weight: 700; border: none; }
+    button.good { background: linear-gradient(135deg, var(--accent-2), #44d79b); color: #052415; font-weight: 700; border: none; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      grid-column: span 12;
+      background: linear-gradient(155deg, color-mix(in srgb, var(--card) 92%, transparent), color-mix(in srgb, var(--card-2) 88%, transparent));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+    }
+
+    .muted { color: var(--text-muted); }
+
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(110px, 1fr));
+      gap: 10px;
+    }
+
+    .kpi .tile {
+      background: color-mix(in srgb, var(--card-2) 88%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .tile .label { font-size: 0.78rem; color: var(--text-muted); }
+    .tile .value { font-size: 1.2rem; margin-top: 2px; font-weight: 700; }
+
+    .top3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      background: color-mix(in srgb, var(--card-2) 78%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .pill .rank { font-family: 'JetBrains Mono', monospace; color: var(--accent); }
+    .pill .name { font-weight: 700; margin-top: 2px; }
+    .pill .driver { font-size: 0.84rem; color: var(--text-muted); margin-top: 6px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      padding: 9px 8px;
+      vertical-align: top;
+    }
+
+    th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    tr:hover td { background: color-mix(in srgb, var(--card-2) 68%, transparent); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg-soft) 90%, transparent);
+    }
+
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      border: 1px solid transparent;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .status-risk-high { background: color-mix(in srgb, var(--danger) 22%, transparent); border-color: color-mix(in srgb, var(--danger) 48%, transparent); color: var(--danger); }
+    .status-risk-medium { background: color-mix(in srgb, var(--warn) 20%, transparent); border-color: color-mix(in srgb, var(--warn) 45%, transparent); color: var(--warn); }
+    .status-risk-low { background: color-mix(in srgb, var(--ok) 18%, transparent); border-color: color-mix(in srgb, var(--ok) 42%, transparent); color: var(--ok); }
+    .status-conf-high { background: color-mix(in srgb, var(--ok) 18%, transparent); border-color: color-mix(in srgb, var(--ok) 42%, transparent); color: var(--ok); }
+    .status-conf-medium { background: color-mix(in srgb, var(--warn) 20%, transparent); border-color: color-mix(in srgb, var(--warn) 45%, transparent); color: var(--warn); }
+    .status-conf-low { background: color-mix(in srgb, var(--danger) 22%, transparent); border-color: color-mix(in srgb, var(--danger) 48%, transparent); color: var(--danger); }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      align-items: center;
+    }
+
+    .controls.full { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+    .stream {
+      max-height: 280px;
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .event-item {
+      background: color-mix(in srgb, var(--card-2) 85%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 0.88rem;
+    }
+
+    .event-item .meta { color: var(--text-muted); font-size: 0.78rem; margin-bottom: 5px; }
+
+    #clientDetail {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    #clientDetail pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+
+    @media (max-width: 1024px) {
+      .col-8, .col-6, .col-4 { grid-column: span 12; }
+      .top3 { grid-template-columns: 1fr; }
+      .kpi { grid-template-columns: 1fr 1fr; }
+      .controls, .controls.full { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .shell { padding: 14px; }
+      .kpi { grid-template-columns: 1fr; }
+      .controls, .controls.full { grid-template-columns: 1fr; }
+      .toolbar { width: 100%; }
+      .toolbar input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="header">
+      <div class="title">
+        <h1>thinkRM Admin Console</h1>
+        <p>Portfolio risk, ranking movement, tasking, alerts, and event-driven recompute in one view.</p>
+      </div>
+      <div class="toolbar">
+        <input id="apiBase" value="" aria-label="API base URL" placeholder="API base (defaults to current host)" />
+        <button id="toggleTheme">Toggle Theme</button>
+        <button id="refreshAll" class="primary">Refresh All</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card col-12">
+        <h2>Portfolio Summary</h2>
+        <div id="kpi" class="kpi"></div>
+        <div id="top3" class="top3"></div>
+      </article>
+
+      <article class="card col-8">
+        <h2>Ranked Clients</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th><th>Client</th><th>Score</th><th>Confidence</th><th>Primary Driver</th><th>Detail</th>
+            </tr>
+          </thead>
+          <tbody id="clientsTable"></tbody>
+        </table>
+      </article>
+
+      <article class="card col-4">
+        <h2>Client Detail</h2>
+        <div id="clientDetail" class="muted">Select a client from the table.</div>
+      </article>
+
+      <article class="card col-6">
+        <h2>Recompute</h2>
+        <div class="controls">
+          <button id="runRecompute" class="primary">Run Recompute</button>
+          <span class="muted">Deterministic refresh</span>
+          <span></span><span></span>
+        </div>
+        <div id="recomputeOut" class="muted" style="margin-top:10px;">No recompute run yet.</div>
+      </article>
+
+      <article class="card col-6">
+        <h2>Scenario Runner</h2>
+        <div class="controls full">
+          <select id="scenarioType">
+            <option value="RATE_UP_BPS">RATE_UP_BPS</option>
+            <option value="DEPOSIT_SHOCK_PCT">DEPOSIT_SHOCK_PCT</option>
+          </select>
+          <input id="scenarioMagnitude" type="number" value="100" />
+          <button id="runScenario" class="good">Apply Scenario</button>
+          <span></span><span></span>
+        </div>
+        <div id="scenarioOut" class="muted" style="margin-top:10px;">No scenario run yet.</div>
+      </article>
+
+      <article class="card col-6">
+        <h2>Tasks</h2>
+        <div class="controls full" style="margin-bottom:10px;">
+          <input id="taskClientId" placeholder="clientId (e.g. C001)" />
+          <input id="taskDesc" placeholder="description" />
+          <input id="taskDue" type="date" />
+          <button id="createTask" class="good">Create Task</button>
+          <span></span>
+        </div>
+        <table>
+          <thead><tr><th>ID</th><th>Client</th><th>Description</th><th>Due</th><th>Created</th></tr></thead>
+          <tbody id="tasksTable"></tbody>
+        </table>
+      </article>
+
+      <article class="card col-6">
+        <h2>Incoming Event Simulator</h2>
+        <div class="controls full" style="margin-bottom:10px;">
+          <input id="eventClientId" placeholder="clientId" />
+          <select id="eventType">
+            <option>DEPOSIT_30D_PCT</option>
+            <option>UTIL_PCT</option>
+            <option>INFLOW_OUTFLOW_RATIO</option>
+            <option>UTIL_2W_DELTA</option>
+            <option>FX_30D_PCT</option>
+            <option>DAYS_SINCE_CONTACT</option>
+            <option>RATE_UP_BPS</option>
+            <option>DEPOSIT_SHOCK_PCT</option>
+          </select>
+          <input id="eventMagnitude" type="number" value="5" />
+          <button id="sendEvent" class="primary">Send Event</button>
+          <span></span>
+        </div>
+        <div id="eventOut" class="muted">No event sent yet.</div>
+      </article>
+
+      <article class="card col-4">
+        <h2>Alerts</h2>
+        <div id="alertsList" class="stream"></div>
+      </article>
+
+      <article class="card col-4">
+        <h2>Audit Log</h2>
+        <div id="auditList" class="stream"></div>
+      </article>
+
+      <article class="card col-4">
+        <h2>Live Event Feed</h2>
+        <div id="eventFeed" class="stream"></div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      lastClients: [],
+      eventFeed: []
+    };
+    const TOKEN_STORAGE_KEY = 'ORCHESTRATE_API_TOKEN';
+
+    const el = (id) => document.getElementById(id);
+
+    function api(path) {
+      const base = (el('apiBase').value || '').trim().replace(/\/$/, '') || window.location.origin;
+      return `${base}${path}`;
+    }
+
+    function getBearerToken() {
+      const fromQuery = new URLSearchParams(window.location.search).get('token');
+      const token = fromQuery || localStorage.getItem(TOKEN_STORAGE_KEY) || '';
+      return token.trim();
+    }
+
+    function ensureBearerToken() {
+      let token = getBearerToken();
+      if (!token) {
+        token = (window.prompt('Enter API bearer token') || '').trim();
+        if (token) localStorage.setItem(TOKEN_STORAGE_KEY, token);
+      }
+      return token;
+    }
+
+    async function request(path, options = {}) {
+      const token = ensureBearerToken();
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const res = await fetch(api(path), {
+        ...options,
+        headers
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+      return res.json();
+    }
+
+    function addEvent(message, meta = '') {
+      state.eventFeed.unshift({ at: new Date().toISOString(), message, meta });
+      state.eventFeed = state.eventFeed.slice(0, 60);
+      renderEventFeed();
+    }
+
+    function riskBand(score) {
+      if (Number(score) >= 70) return { label: 'HIGH RISK', cls: 'status-risk-high' };
+      if (Number(score) >= 40) return { label: 'MED RISK', cls: 'status-risk-medium' };
+      return { label: 'LOW RISK', cls: 'status-risk-low' };
+    }
+
+    function confidenceBand(confidence) {
+      if (Number(confidence) >= 0.8) return { label: 'HIGH CONF', cls: 'status-conf-high' };
+      if (Number(confidence) >= 0.6) return { label: 'MED CONF', cls: 'status-conf-medium' };
+      return { label: 'LOW CONF', cls: 'status-conf-low' };
+    }
+
+    function statusChip(label, cls) {
+      return `<span class="status ${cls}">${label}</span>`;
+    }
+
+    function renderEventFeed() {
+      const wrap = el('eventFeed');
+      if (!state.eventFeed.length) {
+        wrap.innerHTML = '<div class="muted">No events yet.</div>';
+        return;
+      }
+      wrap.innerHTML = state.eventFeed.map((e) => `
+        <div class="event-item">
+          <div class="meta mono">${e.at}${e.meta ? ` • ${e.meta}` : ''}</div>
+          <div>${e.message}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderSummary(data) {
+      const s = data.snapshot || {};
+      el('kpi').innerHTML = [
+        ['Total Clients', s.totalClients ?? '-'],
+        ['High Risk', s.highRiskCount ?? '-'],
+        ['Medium Risk', s.mediumRiskCount ?? '-'],
+        ['No Contact >30d', s.noContactOver30Count ?? '-'],
+        ['New Alerts', s.newAlertsCount ?? '-']
+      ].map(([label, value]) => `
+        <div class="tile"><div class="label">${label}</div><div class="value">${value}</div></div>
+      `).join('');
+
+      const top3 = data.top3 || [];
+      el('top3').innerHTML = top3.length ? top3.map((c) => `
+        <div class="pill">
+          <div class="rank">#${c.rank} • ${c.id}</div>
+          <div class="name">${c.name}</div>
+          <div>
+            Score: <strong>${c.score}</strong> ${statusChip(riskBand(c.score).label, riskBand(c.score).cls)}
+            | Conf: <strong>${c.confidence}</strong> ${statusChip(confidenceBand(c.confidence).label, confidenceBand(c.confidence).cls)}
+          </div>
+          <div class="driver">${c.primaryDriver || 'No driver'}</div>
+        </div>
+      `).join('') : '<div class="muted">No ranked clients.</div>';
+    }
+
+    function renderClients(rows) {
+      state.lastClients = rows;
+      el('clientsTable').innerHTML = rows.map((c) => `
+        <tr>
+          <td class="mono">${c.rank}</td>
+          <td><strong>${c.name}</strong><br/><span class="muted mono">${c.id}</span></td>
+          <td>${c.score} ${statusChip(riskBand(c.score).label, riskBand(c.score).cls)}</td>
+          <td>${c.confidence} ${statusChip(confidenceBand(c.confidence).label, confidenceBand(c.confidence).cls)}</td>
+          <td>${c.primaryDriver || '<span class="muted">n/a</span>'}</td>
+          <td><button data-client="${c.id}" class="viewClient">View</button></td>
+        </tr>
+      `).join('');
+
+      document.querySelectorAll('.viewClient').forEach((btn) => {
+        btn.addEventListener('click', () => loadClientDetail(btn.dataset.client));
+      });
+    }
+
+    function renderClientDetail(data) {
+      el('clientDetail').innerHTML = `
+        <div class="mono muted">${data.id} • rank ${data.rank}</div>
+        <h3 style="margin:6px 0 8px;">${data.name}</h3>
+        <div style="margin-bottom:8px;">
+          Priority Score: <strong>${data.priorityScore}</strong> ${statusChip(riskBand(data.priorityScore).label, riskBand(data.priorityScore).cls)}
+          | Confidence: <strong>${data.confidence}</strong> ${statusChip(confidenceBand(data.confidence).label, confidenceBand(data.confidence).cls)}
+        </div>
+        <div class="badge">Subscores</div>
+        <div class="mono" style="margin:7px 0 10px; font-size:.84rem;">${JSON.stringify(data.subscores)}</div>
+        <div class="badge">Drivers</div>
+        <ul style="margin:6px 0 10px; padding-left:18px;">${(data.drivers || []).map((d) => `<li>${d}</li>`).join('')}</ul>
+        <div class="badge">Raw Signals</div>
+        <pre class="mono" style="margin:7px 0 0; white-space:pre-wrap; font-size:.8rem;">${JSON.stringify(data.rawSignals, null, 2)}</pre>
+      `;
+    }
+
+    function renderTasks(rows) {
+      el('tasksTable').innerHTML = rows.length ? rows.map((t) => `
+        <tr>
+          <td class="mono">${t.id}</td>
+          <td class="mono">${t.clientId}</td>
+          <td>${t.description}</td>
+          <td>${t.dueDate}</td>
+          <td class="mono">${t.createdAt}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="5" class="muted">No tasks.</td></tr>';
+    }
+
+    function renderAudit(rows) {
+      const wrap = el('auditList');
+      wrap.innerHTML = rows.length ? rows.map((a) => `
+        <div class="event-item">
+          <div class="meta mono">${a.at} • ${a.clientId}</div>
+          <div>${a.auditdescription}</div>
+        </div>
+      `).join('') : '<div class="muted">No audit records.</div>';
+    }
+
+    function renderAlerts(rows) {
+      const wrap = el('alertsList');
+      wrap.innerHTML = rows.length ? rows.map((a) => `
+        <div class="event-item">
+          <div class="meta mono">${a.at} • ${a.clientId}</div>
+          <div><strong>${a.type}</strong></div>
+          <div>${a.message}</div>
+        </div>
+      `).join('') : '<div class="muted">No active alerts.</div>';
+    }
+
+    async function loadSummary() {
+      const data = await request('/api/summary');
+      renderSummary(data);
+    }
+
+    async function loadClients() {
+      const data = await request('/api/clients');
+      renderClients(data.clients || []);
+      if (data.clients && data.clients[0]) {
+        await loadClientDetail(data.clients[0].id);
+      }
+    }
+
+    async function loadClientDetail(id) {
+      const data = await request(`/api/clients/${id}`);
+      renderClientDetail(data);
+    }
+
+    async function loadTasks() {
+      const data = await request('/api/tasks');
+      renderTasks(data.tasks || []);
+    }
+
+    async function loadAudit() {
+      const data = await request('/api/audit?limit=30');
+      renderAudit(data.audit || []);
+    }
+
+    async function loadAlerts() {
+      const data = await request('/api/alerts');
+      renderAlerts(data.alerts || []);
+    }
+
+    async function refreshAll() {
+      try {
+        await Promise.all([loadSummary(), loadClients(), loadTasks(), loadAudit(), loadAlerts()]);
+        addEvent('Dashboard refreshed', 'SYSTEM');
+      } catch (err) {
+        addEvent(`Refresh failed: ${err.message}`, 'ERROR');
+      }
+    }
+
+    async function onRecompute() {
+      try {
+        const data = await request('/api/recompute', { method: 'POST' });
+        el('recomputeOut').innerHTML = `
+          <div><strong>Top3 changed:</strong> ${data.diff.top3Changed}</div>
+          <div><strong>Entered Top3:</strong> ${(data.diff.enteredTop3 || []).join(', ') || 'none'}</div>
+          <div><strong>Top movers:</strong> ${(data.diff.topMovers || []).map((m) => `${m.clientId} (${m.rankDelta >= 0 ? '+' : ''}${m.rankDelta})`).join(', ') || 'none'}</div>
+        `;
+        addEvent('Portfolio recomputed', 'RECOMPUTE');
+        await refreshAll();
+      } catch (err) {
+        el('recomputeOut').textContent = err.message;
+        addEvent(`Recompute failed: ${err.message}`, 'ERROR');
+      }
+    }
+
+    async function onScenario() {
+      try {
+        const payload = {
+          scenarioType: el('scenarioType').value,
+          magnitude: Number(el('scenarioMagnitude').value)
+        };
+        const data = await request('/api/scenario', { method: 'POST', body: JSON.stringify(payload) });
+        el('scenarioOut').innerHTML = `
+          <div><strong>Before Top3:</strong> ${(data.beforeTop3 || []).map((c) => c.id).join(', ')}</div>
+          <div><strong>After Top3:</strong> ${(data.afterTop3 || []).map((c) => c.id).join(', ')}</div>
+          <div><strong>Movers:</strong> ${(data.movers || []).map((m) => `${m.clientId} (${m.rankDelta >= 0 ? '+' : ''}${m.rankDelta})`).join(', ') || 'none'}</div>
+        `;
+        addEvent(`Scenario applied: ${payload.scenarioType} (${payload.magnitude})`, 'SCENARIO');
+      } catch (err) {
+        el('scenarioOut').textContent = err.message;
+        addEvent(`Scenario failed: ${err.message}`, 'ERROR');
+      }
+    }
+
+    async function onCreateTask() {
+      try {
+        const payload = {
+          clientId: el('taskClientId').value.trim(),
+          description: el('taskDesc').value.trim(),
+          dueDate: el('taskDue').value
+        };
+        const data = await request('/api/tasks', { method: 'POST', body: JSON.stringify(payload) });
+        addEvent(`Task created ${data.id} for ${data.clientId}`, 'TASK');
+        await Promise.all([loadTasks(), loadAudit()]);
+      } catch (err) {
+        addEvent(`Task create failed: ${err.message}`, 'ERROR');
+      }
+    }
+
+    async function onSendEvent() {
+      try {
+        const payload = {
+          clientId: el('eventClientId').value.trim(),
+          eventType: el('eventType').value,
+          magnitude: Number(el('eventMagnitude').value)
+        };
+        const data = await request('/api/events/input-changed', { method: 'POST', body: JSON.stringify(payload) });
+        el('eventOut').innerHTML = `
+          <div><strong>Top3 changed:</strong> ${data.diff.top3Changed}</div>
+          <div><strong>Entered Top3:</strong> ${(data.diff.enteredTop3 || []).join(', ') || 'none'}</div>
+        `;
+        addEvent(`Input event: ${payload.eventType} (${payload.magnitude}) on ${payload.clientId}`, 'INPUT');
+        await Promise.all([refreshAll(), loadAudit(), loadAlerts()]);
+      } catch (err) {
+        el('eventOut').textContent = err.message;
+        addEvent(`Input event failed: ${err.message}`, 'ERROR');
+      }
+    }
+
+    function wire() {
+      if (!el('apiBase').value.trim()) {
+        el('apiBase').value = window.location.origin;
+      }
+      el('toggleTheme').addEventListener('click', () => {
+        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+      });
+      el('refreshAll').addEventListener('click', refreshAll);
+      el('runRecompute').addEventListener('click', onRecompute);
+      el('runScenario').addEventListener('click', onScenario);
+      el('createTask').addEventListener('click', onCreateTask);
+      el('sendEvent').addEventListener('click', onSendEvent);
+    }
+
+    wire();
+    refreshAll();
+    setInterval(async () => {
+      try {
+        await Promise.all([loadSummary(), loadAudit(), loadAlerts()]);
+      } catch (_) {}
+    }, 15000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>thinkRM Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+    :root {
+      --primary: #0F2B46;
+      --background: #F7F9FB;
+      --accent: #1F70C1;
+      --success: #24A148;
+      --alert: #DA1E28;
+
+      --ink-strong: #10253D;
+      --ink-soft: #4D647D;
+      --panel: #FFFFFF;
+      --line: #D0DCE8;
+      --line-strong: #9FB4C8;
+      --focus: #0F62FE;
+      --warn: #F1C21B;
+      --surface-soft: #EAF1F8;
+      --shadow: 0 16px 34px rgba(15, 43, 70, 0.1);
+      --top-chrome-height: 126px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'IBM Plex Sans', sans-serif;
+      height: 100vh;
+      color: var(--ink-strong);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(31, 112, 193, 0.09), transparent 24%),
+        radial-gradient(circle at 0% 100%, rgba(15, 43, 70, 0.08), transparent 26%),
+        var(--background);
+      overflow: hidden;
+    }
+
+    .top-bar {
+      height: 52px;
+      width: 100%;
+      background: #0F2B46;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.88rem;
+    }
+
+    .status-banner-wrap {
+      height: 74px;
+      width: 100%;
+      background: #F4F6F8;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+    }
+
+    .status-banner {
+      width: 100%;
+      border: 1px solid #D8E1EA;
+      border-radius: 8px;
+      background: #FAFBFC;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-text {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .status-greeting {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      line-height: 1.2;
+    }
+
+    .status-line {
+      font-size: 0.95rem;
+      color: var(--ink-strong);
+      line-height: 1.25;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-line strong {
+      color: var(--ink-strong);
+      font-weight: 600;
+    }
+
+    .attention-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 8px;
+      border: 1px solid #A7BBD0;
+      background: #EAF1F8;
+      color: #0F2B46;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .top-left {
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .top-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.8rem;
+    }
+
+    .logout-link {
+      color: #fff;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    .logout-link:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .env-tag {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-weight: 600;
+    }
+
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.92;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #24A148;
+      box-shadow: 0 0 0 4px rgba(36, 161, 72, 0.2);
+    }
+
+    .clock {
+      font-family: 'IBM Plex Mono', monospace;
+      opacity: 0.9;
+    }
+
+    .shell {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 14px;
+      height: calc(100vh - var(--top-chrome-height));
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: grid;
+      gap: 3px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+    }
+
+    .timestamp {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    .situation-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 8px;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      background: #fbfdff;
+      border-radius: 9px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      min-height: 42px;
+    }
+
+    .metric-label {
+      color: var(--ink-soft);
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .metric-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .metric.alert .metric-value {
+      color: var(--alert);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 14px;
+      min-height: 0;
+      align-items: stretch;
+    }
+
+    .priorities {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .section-title span {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+
+    .section-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .all-clients-btn {
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--primary);
+      border-radius: 8px;
+      padding: 7px 10px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+      cursor: pointer;
+    }
+
+    .all-clients-btn:hover {
+      background: var(--surface-soft);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .priority-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .priority-card {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(90deg, rgba(218, 30, 40, 0.12), rgba(247, 249, 251, 0.92) 22%);
+      box-shadow: 0 8px 20px rgba(15, 43, 70, 0.08);
+      display: grid;
+      grid-template-columns: 4px 1fr;
+    }
+
+    .priority-card.risk-medium {
+      background: linear-gradient(90deg, rgba(241, 194, 27, 0.15), rgba(247, 249, 251, 0.92) 22%);
+    }
+
+    .priority-card.risk-low {
+      background: linear-gradient(90deg, rgba(36, 161, 72, 0.13), rgba(247, 249, 251, 0.92) 22%);
+    }
+
+    .priority-rail {
+      background: var(--alert);
+    }
+
+    .priority-card.risk-medium .priority-rail {
+      background: #C28B0E;
+    }
+
+    .priority-card.risk-low .priority-rail {
+      background: var(--success);
+    }
+
+    .priority-content {
+      padding: 10px 12px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .priority-content h3 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .priority-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+    }
+
+    .priority-meta strong {
+      color: var(--ink-strong);
+      font-weight: 600;
+    }
+
+    .driver,
+    .action {
+      font-size: 0.84rem;
+      line-height: 1.3;
+    }
+
+    .driver strong,
+    .action strong {
+      font-weight: 600;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 1px;
+    }
+
+    .btn {
+      border-radius: 8px;
+      border: 1px solid var(--line-strong);
+      padding: 6px 9px;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #fff;
+      color: var(--primary);
+      transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+    }
+
+    .btn:hover {
+      background: var(--surface-soft);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .sidebar {
+      display: grid;
+      gap: 10px;
+      grid-template-rows: repeat(3, 1fr);
+      height: 100%;
+      min-height: 0;
+    }
+
+    .side-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 6px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .side-card h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--primary);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+    }
+
+    .list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+      padding: 8px;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      color: var(--ink-strong);
+    }
+
+    .item .mini {
+      display: block;
+      color: var(--ink-soft);
+      font-size: 0.76rem;
+      margin-top: 3px;
+    }
+
+    .item.alert {
+      border-color: rgba(218, 30, 40, 0.25);
+      background: rgba(218, 30, 40, 0.04);
+    }
+
+    .empty {
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      margin: 0;
+    }
+
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 0.8rem;
+      box-shadow: 0 10px 20px rgba(15, 43, 70, 0.3);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 43, 70, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 20;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: min(920px, 100%);
+      height: min(82vh, 760px);
+      border-radius: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 44px rgba(15, 43, 70, 0.28);
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .modal-subtitle {
+      margin: 0;
+      padding: 8px 16px 10px;
+      color: var(--ink-soft);
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-close {
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--primary);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      background: var(--surface-soft);
+      border-color: var(--accent);
+    }
+
+    .clients-list {
+      margin: 0;
+      padding: 12px;
+      list-style: none;
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .client-row {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+      padding: 10px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .client-row-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .client-row h4 {
+      margin: 0;
+      font-size: 0.92rem;
+    }
+
+    .client-row-meta {
+      font-size: 0.79rem;
+      color: var(--ink-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .client-row-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1024px) {
+      .situation-strip {
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .top-bar {
+        height: auto;
+        min-height: 52px;
+        padding: 8px 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      :root {
+        --top-chrome-height: 148px;
+      }
+
+      .status-banner-wrap {
+        height: auto;
+        min-height: 74px;
+        padding: 8px 12px;
+      }
+
+      .status-banner {
+        align-items: flex-start;
+      }
+
+      .status-line {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+      }
+
+      .shell {
+        padding: 14px;
+        height: calc(100vh - var(--top-chrome-height));
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .situation-strip {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+
+      .sidebar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar" aria-label="Enterprise header">
+    <div class="top-left">thinkRM</div>
+    <div class="top-right">
+      <span class="env-tag">Demo</span>
+      <span>User: S. Rajesh</span>
+      <span class="live"><span class="live-dot"></span><span id="topClock" class="clock">--:--:--</span></span>
+      <a class="logout-link" href="/logout.html">Logout</a>
+    </div>
+  </header>
+  <section class="status-banner-wrap" aria-label="Status banner">
+    <div class="status-banner" role="status" aria-live="polite">
+      <div class="status-text">
+        <div class="status-greeting">Good afternoon, Stevie.</div>
+        <div class="status-line"><span class="attention-pill">3</span> clients require attention today.</div>
+      </div>
+    </div>
+  </section>
+
+  <main class="shell">
+
+
+    <section class="situation-strip" aria-label="Situation strip">
+      <div class="metric"><span class="metric-label">Total</span><span class="metric-value" id="metricTotal">--</span></div>
+      <div class="metric alert"><span class="metric-label">High Risk</span><span class="metric-value" id="metricHigh">--</span></div>
+      <div class="metric"><span class="metric-label">Medium</span><span class="metric-value" id="metricMedium">--</span></div>
+      <div class="metric"><span class="metric-label">&gt;30d No Contact</span><span class="metric-value" id="metricNoContact">--</span></div>
+      <div class="metric alert"><span class="metric-label">Alerts</span><span class="metric-value" id="metricAlerts">--</span></div>
+    </section>
+
+    <section class="layout">
+      <section class="priorities">
+        <div class="section-title">
+          <h2>Today's Priorities</h2>
+          <div class="section-actions">
+            <span>Top 3 ranked clients</span>
+            <button class="all-clients-btn" type="button" id="openClientsModal">See All Clients</button>
+          </div>
+        </div>
+        <div class="priority-list" id="priorityList"></div>
+      </section>
+
+      <aside class="sidebar" aria-label="Support panels">
+        <section class="side-card">
+          <h3>Today's Tasks</h3>
+          <ul class="list" id="taskList"></ul>
+        </section>
+
+        <section class="side-card">
+          <h3>Alerts Stream</h3>
+          <ul class="list" id="alertList"></ul>
+        </section>
+
+        <section class="side-card">
+          <h3>Recent Audit</h3>
+          <ul class="list" id="auditList"></ul>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div class="modal-backdrop" id="clientsModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="clientsModalTitle">
+      <header class="modal-header">
+        <h3 id="clientsModalTitle">All Clients</h3>
+        <button class="modal-close" type="button" id="closeClientsModal">Close</button>
+      </header>
+      <p class="modal-subtitle">Scrollable portfolio list with quick actions.</p>
+      <ul class="clients-list" id="clientsList"></ul>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      top3: [],
+      allClients: [],
+      detailsById: {},
+    };
+    const TOKEN_STORAGE_KEY = 'ORCHESTRATE_API_TOKEN';
+
+    const el = (id) => document.getElementById(id);
+
+    function getBearerToken() {
+      const fromQuery = new URLSearchParams(window.location.search).get('token');
+      const token = fromQuery || localStorage.getItem(TOKEN_STORAGE_KEY) || '';
+      return token.trim();
+    }
+
+    function ensureBearerToken() {
+      let token = getBearerToken();
+      if (!token) {
+        token = (window.prompt('Enter API bearer token') || '').trim();
+        if (token) localStorage.setItem(TOKEN_STORAGE_KEY, token);
+      }
+      return token;
+    }
+
+    async function request(url, options = {}) {
+      const token = ensureBearerToken();
+      const headers = {
+        ...(options.headers || {})
+      };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed: ${url}`);
+      }
+      return response.json();
+    }
+
+    function confidenceLabel(value) {
+      if (value >= 0.75) return 'High';
+      if (value >= 0.5) return 'Medium';
+      return 'Low';
+    }
+
+    function riskClass(score) {
+      if (score >= 70) return 'risk-high';
+      if (score >= 40) return 'risk-medium';
+      return 'risk-low';
+    }
+
+    function recommendedAction(detail) {
+      if (!detail || !detail.rawSignals) return 'Review relationship signals and align outreach today.';
+      const { deposit_30d_pct, util_pct, days_since_contact } = detail.rawSignals;
+
+      if (deposit_30d_pct <= -12 || util_pct >= 80) {
+        return 'Review liquidity pressure today and schedule an escalation call.';
+      }
+      if (days_since_contact > 30) {
+        return 'Reconnect within 24 hours and confirm client operating outlook.';
+      }
+      return 'Validate exposure assumptions and update account strategy this week.';
+    }
+
+    function formatDriver(detail) {
+      if (!detail || !detail.rawSignals) return 'Signals pending refresh';
+      const { deposit_30d_pct, util_pct } = detail.rawSignals;
+      return `Deposit ${deposit_30d_pct}%, Util ${util_pct}%`;
+    }
+
+    function renderMetrics(snapshot) {
+      el('metricTotal').textContent = snapshot.totalClients ?? '--';
+      el('metricHigh').textContent = snapshot.highRiskCount ?? '--';
+      el('metricMedium').textContent = snapshot.mediumRiskCount ?? '--';
+      el('metricNoContact').textContent = snapshot.noContactOver30Count ?? '--';
+      el('metricAlerts').textContent = snapshot.newAlertsCount ?? '--';
+    }
+
+    function renderPriorities() {
+      const container = el('priorityList');
+      if (!state.top3.length) {
+        container.innerHTML = '<p class="empty">No ranked priorities yet.</p>';
+        return;
+      }
+
+      container.innerHTML = state.top3.map((client) => {
+        const detail = state.detailsById[client.id];
+        const driverText = formatDriver(detail);
+        const confidence = confidenceLabel(client.confidence);
+        const actionText = recommendedAction(detail);
+
+        return `
+          <article class="priority-card ${riskClass(client.score)}">
+            <div class="priority-rail"></div>
+            <div class="priority-content">
+              <h3>${client.name}</h3>
+              <div class="priority-meta">
+                <span><strong>Priority:</strong> ${Math.round(client.score)}</span>
+                <span><strong>Confidence:</strong> ${confidence}</span>
+              </div>
+              <div class="driver"><strong>Primary Driver:</strong> ${driverText}</div>
+              <div class="action"><strong>Recommended Action:</strong> ${actionText}</div>
+              <div class="card-actions">
+                <button class="btn" type="button" data-view="${client.id}">View Details</button>
+                <button class="btn primary" type="button" data-task="${client.id}">Create Task</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderAllClientsModal() {
+      const container = el('clientsList');
+      if (!state.allClients.length) {
+        container.innerHTML = '<li class="empty">No clients available.</li>';
+        return;
+      }
+
+      container.innerHTML = state.allClients.map((client) => {
+        const conf = confidenceLabel(client.confidence);
+        const driver = client.primaryDriver || 'No driver available';
+        return `
+          <li class="client-row">
+            <div class="client-row-head">
+              <h4>${client.name}</h4>
+              <span class="mini">${client.id}</span>
+            </div>
+            <div class="client-row-meta">
+              <span><strong>Priority:</strong> ${Math.round(client.score)}</span>
+              <span><strong>Confidence:</strong> ${conf}</span>
+              <span><strong>Driver:</strong> ${driver}</span>
+            </div>
+            <div class="client-row-actions">
+              <button class="btn" type="button" data-modal-view="${client.id}">View Details</button>
+              <button class="btn primary" type="button" data-modal-task="${client.id}">Create Task</button>
+            </div>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function itemOrEmpty(targetId, htmlItems, emptyText) {
+      const target = el(targetId);
+      if (!htmlItems.length) {
+        target.innerHTML = `<li class="empty">${emptyText}</li>`;
+        return;
+      }
+      target.innerHTML = htmlItems.join('');
+    }
+
+    function renderTasks(tasks) {
+      const sorted = tasks
+        .slice()
+        .sort((a, b) => String(a.dueDate).localeCompare(String(b.dueDate)))
+        .slice(0, 5);
+
+      const items = sorted.map((task) => `
+        <li class="item">
+          <strong>${task.clientId}</strong> ${task.description}
+          <span class="mini">Due ${task.dueDate}</span>
+        </li>
+      `);
+
+      itemOrEmpty('taskList', items, 'No tasks queued for today.');
+    }
+
+    function renderAlerts(alerts) {
+      const items = alerts.slice(0, 4).map((a) => `
+        <li class="item alert">
+          ${a.message}
+          <span class="mini">${new Date(a.at).toLocaleString()}</span>
+        </li>
+      `);
+
+      itemOrEmpty('alertList', items, 'No active alerts.');
+    }
+
+    function renderAudit(audit) {
+      const items = audit.slice(0, 3).map((entry) => `
+        <li class="item">
+          <strong>${entry.clientId}</strong> ${entry.auditdescription}
+          <span class="mini">${new Date(entry.at).toLocaleString()}</span>
+        </li>
+      `);
+
+      itemOrEmpty('auditList', items, 'No recent audit entries.');
+    }
+
+    function showToast(message) {
+      const toast = el('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 1900);
+    }
+
+    async function loadCore() {
+      const [summaryData, clientsData] = await Promise.all([
+        request('/api/summary'),
+        request('/api/clients'),
+      ]);
+
+      const data = summaryData;
+      state.top3 = data.top3 || [];
+      state.allClients = clientsData.clients || [];
+      renderMetrics(data.snapshot || {});
+
+      const detailRequests = state.top3.map((c) => request(`/api/clients/${c.id}`).catch(() => null));
+      const details = await Promise.all(detailRequests);
+      state.detailsById = {};
+      details.forEach((detail) => {
+        if (detail && detail.id) {
+          state.detailsById[detail.id] = detail;
+        }
+      });
+
+      renderPriorities();
+      renderAllClientsModal();
+    }
+
+    async function loadSidebar() {
+      const [taskData, alertData, auditData] = await Promise.all([
+        request('/api/tasks').catch(() => ({ tasks: [] })),
+        request('/api/alerts').catch(() => ({ alerts: [] })),
+        request('/api/audit?limit=3').catch(() => ({ audit: [] })),
+      ]);
+
+      renderTasks(taskData.tasks || []);
+      renderAlerts(alertData.alerts || []);
+      renderAudit(auditData.audit || []);
+    }
+
+    async function handleCreateTask(clientId) {
+      const due = new Date();
+      due.setDate(due.getDate() + 1);
+      const dueDate = due.toISOString().slice(0, 10);
+
+      await request('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientId,
+          description: 'Priority review follow-up',
+          dueDate,
+        }),
+      });
+
+      showToast(`Task created for ${clientId}`);
+      await loadSidebar();
+    }
+
+    function handleViewDetails(clientId) {
+      window.location.href = `/viewDetails.html?id=${encodeURIComponent(clientId)}`;
+    }
+
+    function openClientsModal() {
+      const modal = el('clientsModal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeClientsModal() {
+      const modal = el('clientsModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function bindListActions(listElement, viewAttr, taskAttr) {
+      listElement.addEventListener('click', async (event) => {
+        const target = event.target;
+        const viewId = target.getAttribute(viewAttr);
+        const taskId = target.getAttribute(taskAttr);
+
+        if (viewId) {
+          try {
+            handleViewDetails(viewId);
+          } catch (error) {
+            showToast('Details are unavailable for this client');
+          }
+          return;
+        }
+
+        if (taskId) {
+          try {
+            await handleCreateTask(taskId);
+          } catch (error) {
+            showToast('Could not create task');
+          }
+        }
+      });
+    }
+
+    function bindEvents() {
+      bindListActions(el('priorityList'), 'data-view', 'data-task');
+      bindListActions(el('clientsList'), 'data-modal-view', 'data-modal-task');
+
+      el('openClientsModal').addEventListener('click', openClientsModal);
+      el('closeClientsModal').addEventListener('click', closeClientsModal);
+
+      el('clientsModal').addEventListener('click', (event) => {
+        if (event.target.id === 'clientsModal') {
+          closeClientsModal();
+        }
+      });
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeClientsModal();
+        }
+      });
+    }
+
+    function updateTopClock() {
+      const clockEl = el('topClock');
+      if (!clockEl) return;
+      clockEl.textContent = new Date().toLocaleTimeString();
+    }
+
+    async function init() {
+      bindEvents();
+      try {
+        await Promise.all([loadCore(), loadSidebar()]);
+      } catch (error) {
+        showToast('Unable to load dashboard data');
+      }
+      el('lastUpdated').textContent = `Updated: ${new Date().toLocaleString()}`;
+      updateTopClock();
+      window.setInterval(updateTopClock, 1000);
+    }
+
+    init();
+  </script>
+</body>
+</html>
